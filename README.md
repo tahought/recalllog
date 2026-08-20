@@ -215,29 +215,29 @@ npm run dev
 
 > スクリーンショットは `docs/images/` に置いています。
 
-### トップ
+**### トップ**
 
-![トップ](docs/images/01-home.png)
+<img src="docs/images/01-home.png" alt="トップ" width="50%">
 
-### サインアップ（パスワード強度メーターなど）
+**### サインアップ（パスワード強度メーターなど）**
 
-![サインアップ](docs/images/02-signup.png)
+<img src="docs/images/02-signup.png" alt="サインアップ" width="50%">
 
-### ホーム（今日の復習＋勉強の記録）
+**### ホーム（今日の復習＋勉強の記録）**
 
-![ホーム](docs/images/03-dashboard.png)
+<img src="docs/images/03-dashboard.png" alt="ホーム" width="50%">
 
-### やったこと（日付ごとの一覧）
+**### やったこと（日付ごとの一覧）**
 
-![やったこと](docs/images/04-records.png)
+<img src="docs/images/04-records.png" alt="やったこと" width="50%">
 
-### カレンダー（復習予定の俯瞰）
+**### カレンダー（復習予定の俯瞰）**
 
-![カレンダー](docs/images/05-calendar.png)
+<img src="docs/images/05-calendar.png" alt="カレンダー" width="50%">
 
-### 管理者によるユーザー管理（ADMIN 専用）
+**### 管理者によるユーザー管理（ADMIN 専用）**
 
-![ユーザー管理](docs/images/06-admin.png)
+<img src="docs/images/06-admin.png" alt="ユーザー管理" width="50%">
 
 ---
 
