@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// ユーザ。password には bcrypt でハッシュ化した値のみを保存する（平文は保存しない）。
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String // bcrypt ハッシュ（ソルト内包）
+  name      String
+  role      Role     @default(USER)
+  isLocked  Boolean  @default(false) // 管理者によるアカウントロック
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  studyLogs     StudyLog[]
+  loginAttempts LoginAttempt[]
+  loginHistory  LoginHistory[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+/// 学習ログ（その日に学んだこと）。忘却曲線に沿った復習の対象。
+/// 認可（本人のログのみ操作可）の確認対象でもある。
+model StudyLog {
+  id      String @id @default(uuid())
+  title   String // 学んだことの見出し（例：「英語の仮定法」）
+  content String @default("") // 詳細・メモ
+  tag     String @default("") // 任意のタグ（科目名など）
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // ── 間隔反復（SRS）の状態 ────────────────────────────
+  stage        Int      @default(0) // 現在の復習段階（0起点）
+  nextReviewAt DateTime // 次に復習すべき日
+  reviewCount  Int      @default(0) // 復習した回数（統計用）
+  isCompleted  Boolean  @default(false) // 最終段階まで到達したか
+
+  learnedAt DateTime @default(now()) // 学習した日
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reviews Review[]
+
+  @@index([userId, nextReviewAt])
+}
+
+/// 復習の履歴。いつ復習し、覚えていたか（recalled）を記録する。
+model Review {
+  id         String   @id @default(uuid())
+  studyLogId String
+  studyLog   StudyLog @relation(fields: [studyLogId], references: [id], onDelete: Cascade)
+  recalled   Boolean // true=覚えていた / false=忘れていた
+  stageAt    Int // 復習時点の段階（統計用）
+  reviewedAt DateTime @default(now())
+
+  @@index([studyLogId])
+}
+
+/// ログイン試行の記録。レートリミット（一定回数の失敗でロック）判定に使用する。
+model LoginAttempt {
+  id        String   @id @default(uuid())
+  email     String
+  success   Boolean
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([email, createdAt])
+}
+
+/// ログイン成功の履歴。ユーザ本人が確認できる。
+model LoginHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
