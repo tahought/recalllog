@@ -25,7 +25,7 @@ export const Header = () => {
           {user ? (
             <>
               <Link href="/member/dashboard">ホーム</Link>
-              <Link href="/member/logs">学習ログ</Link>
+              <Link href="/member/records">やったこと</Link>
               <Link href="/member/calendar">カレンダー</Link>
               <Link href="/member/account">アカウント</Link>
               {user.role === "ADMIN" && <Link href="/admin">管理</Link>}

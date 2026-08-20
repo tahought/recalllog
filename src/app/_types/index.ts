@@ -73,6 +73,23 @@ export const studyLogSchema = z.object({
 });
 export type StudyLogInput = z.infer<typeof studyLogSchema>;
 
+// 学習ログの一括登録（複数行をまとめて記録）
+export const bulkStudyLogSchema = z.object({
+  // 各行のテキスト（「タイトル」または「タイトル, タグ」の形式）
+  lines: z
+    .array(z.string().min(1).max(200))
+    .min(1, "1件以上入力してください。")
+    .max(50, "一度に登録できるのは50件までです。"),
+  // 共通タグ（各行に個別タグが無い場合に適用）
+  commonTag: z.string().max(30).optional().default(""),
+  // 学習日（省略時は当日）
+  learnedAt: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "日付の形式が正しくありません。")
+    .optional(),
+});
+export type BulkStudyLogInput = z.infer<typeof bulkStudyLogSchema>;
+
 // 復習結果の記録
 export const reviewSchema = z.object({
   recalled: z.boolean(),
